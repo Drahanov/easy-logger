@@ -1,34 +1,17 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# C# Build outputs
+bin/
+obj/
+*.user
+*.suo
 
 # Logs
 logs/
 
 # IDE
 .vscode/
+.vs/
 .idea/
+.claude/
 *.swp
 *.swo
 *~
@@ -40,7 +23,14 @@ nul
 
 # External dependencies (not part of our project)
 LibreHardwareMonitor-net472/
+libs/
 
-# Build outputs
-*.exe
-*.msi
+# Installer output
+installer-output/
+
+# Old Python project folder (to be deleted)
+EasyLogger-CSharp/
+
+# Icon build helpers
+create_icon.ps1
+icon_temp.png
