@@ -1,107 +1,77 @@
-# EasyLogger - Windows Temperature Logger
+# EasyLogger - Windows Hardware Sensors Logger
 
-A simple Python-based temperature monitoring tool for Windows that logs CPU, GPU, and motherboard temperatures to help diagnose system crashes and overheating issues.
+An Windows application for monitoring CPU, GPU, and motherboard temperatures to help diagnose system crashes and overheating issues.
+
+Use this app when you want to track logs throughout the entire usage of your computer. Even if it shuts down, you’ll be able to go back to the logs and see what the sensors were showing at that moment.
+
+
+## Prehistory
+My computer started having a lot of issues that I couldn’t track down. I tried several hardware-sensor logging apps and was frustrated by how overly complex they all were and how much useless information they included. It’s just hard to make sense of them. On top of that, most of them don’t support logging, only showing real-time data, or they hide that feature behind a paywall.
+
+It turned out that it was easier to build an app specifically for this myself than to figure out the existing ones.
+
+![ui image](ui-screenshot.png "Application UI")
+![logs image](log-screenshot.png "logs UI")
+
 
 ## Features
-
-- Monitors all available temperature sensors (CPU, GPU, motherboard, etc.)
-- Logs additional metrics: fan speeds, clock speeds, power consumption, load percentages
-- Configurable logging interval
-- CSV output format for easy analysis in Excel or other tools
-- Timestamped log files
-- Works with any hardware that LibreHardwareMonitor supports
-
-## Requirements
-
-- Windows OS
-- Python 3.7 or higher
-- LibreHardwareMonitor (free, open-source)
+- **Windows Forms UI** - Clean settings interface with live status monitoring
+- **System Tray Integration** - Runs quietly in the background
+- **Direct Hardware Access** - Uses LibreHardwareMonitorLib (no external dependencies)
+- **Comprehensive Monitoring** - CPU, GPU, motherboard, fans, power, load
+- **Auto-Start** - Optional Windows startup integration
+- **Interactive Log Viewer** - Built-in HTML viewer with charts
+- **Configurable** - Adjust logging interval and output location
+- **Single Executable** - Self-contained, no installation required
 
 ## Installation
 
-### Step 1: Install Python
+### Option 1: Windows Installer (Recommended)
 
-1. Download Python from [python.org](https://www.python.org/downloads/)
-2. Run the installer
-3. **IMPORTANT:** Check the box "Add Python to PATH" during installation
-4. Complete the installation
+1. Download `EasyLogger_Setup_v2.0.exe` from [Releases](../../releases)
+2. Run the installer (requires administrator privileges)
+3. Choose installation options:
+   - ✅ Start automatically with Windows (recommended)
+   - Desktop shortcut
+4. Launch EasyLogger from Start Menu or system tray
 
-### Step 2: Install Python Dependencies
+The installer will:
+- Install to `C:\Program Files\EasyLogger\`
+- Create Start Menu shortcuts
+- Set up auto-start (if selected)
+- Create logs directory
 
-Open Command Prompt in the project directory and run:
+### Option 2: Standalone Executable
 
-```bash
-pip install -r requirements.txt
-```
-
-Or alternatively, install packages directly:
-
-```bash
-pip install wmi pypiwin32
-```
-
-### Step 3: Download and Run LibreHardwareMonitor
-
-1. Download LibreHardwareMonitor from: https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases
-2. Extract the ZIP file to a folder (e.g., `C:\LibreHardwareMonitor`)
-3. **Run `LibreHardwareMonitor.exe` as Administrator** (right-click → "Run as administrator")
-4. Keep LibreHardwareMonitor running in the background while using EasyLogger
-
-> **Note:** LibreHardwareMonitor must be running for EasyLogger to work. You can minimize it to the system tray.
-
-### Step 4: Download EasyLogger
-
-Download or clone this repository to your computer.
-
-## Configuration
-
-EasyLogger can be configured using the `config.ini` file. Edit this file to set your preferred defaults:
-
-```ini
-[Settings]
-# Logging interval in seconds
-logging_interval = 10
-
-# Output directory for log files
-output_directory = logs
-```
-
-**Note:** Command-line arguments will override settings from `config.ini`.
+1. Download `EasyLogger.exe` from the `bin/` folder in releases
+2. Place it in your preferred location
+3. Run as administrator (required for hardware access)
 
 ## Usage
 
-### Basic Usage
+### First Launch
 
-Run with settings from `config.ini`:
-```bash
-python temperature_logger.py
-```
+1. **Right-click** the EasyLogger executable → **Run as administrator**
+2. The app minimizes to the system tray (look for the yellow thermometer icon)
+3. **Left-click** the tray icon to open settings
 
-### Override Settings with Command-Line Arguments
+### Settings Window
 
-Override logging interval (log every 5 seconds):
-```bash
-python temperature_logger.py -i 5
-```
+- **Status** - Shows if logging is active and last reading time
+- **Auto-start** - Enable/disable Windows startup
+- **Logging Interval** - How often to record data (1-3600 seconds)
+- **Log Directory** - Where to save CSV files
+- **Open Log Viewer** - View logs with interactive charts
+- **Open Logs Folder** - Quick access to log files
 
-Override output directory:
-```bash
-python temperature_logger.py -o my_custom_logs
-```
+### System Tray
 
-Override both settings:
-```bash
-python temperature_logger.py -i 15 -o crash_logs
-```
-
-**Tip:** Edit `config.ini` for your usual settings, and use command-line arguments only when you need temporary changes.
-
-## Command-Line Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-i`, `--interval` | Logging interval in seconds | From config.ini (default: 10) |
-| `-o`, `--output` | Output directory for log files | From config.ini (default: logs) |
+- **Left-click** → Open settings window
+- **Right-click** → Show menu
+  - Settings
+  - Open Logs Folder
+  - Open Log Viewer
+  - Quit EasyLogger
 
 ## Output Format
 
@@ -109,60 +79,148 @@ Log files are saved as CSV with the following format:
 
 ```csv
 Timestamp,Hardware_Device,Sensor_Name,Sensor_Type,Value,Unit
-2025-11-15 14:30:00,Intel Core i7-9700K,CPU Core #1,Temperature,45.5,°C
-2025-11-15 14:30:00,AMD Radeon RX 6800,GPU Temperature,Temperature,62.0,°C
-2025-11-15 14:30:00,Motherboard,System Fan,Fan,1200,RPM
+2025-11-16 14:30:00,Intel Core i7-9700K,CPU Core #1,Temperature,45.5,°C
+2025-11-16 14:30:00,AMD Radeon RX 6800,GPU Temperature,Temperature,62.0,°C
+2025-11-16 14:30:00,Motherboard,System Fan,Fan,1200,RPM
 ```
-
-The `Hardware_Device` column groups sensors by their parent hardware component (CPU, GPU, Motherboard, etc.), making it easier to identify which device each sensor belongs to.
 
 ### Log File Naming
 
 Files are automatically named with timestamps:
 - Format: `temp_log_YYYYMMDD_HHMMSS.csv`
-- Example: `temp_log_20251115_143000.csv`
+- Example: `temp_log_20251116_143000.csv`
+- Location: Default `C:\Program Files\EasyLogger\logs\` (configurable)
 
-## Analyzing Logs
+## Viewing Logs
 
-### Option 1: HTML Viewer (Recommended)
+### Built-in Log Viewer
 
-Open `log_viewer.html` in your web browser and drag-and-drop your CSV file:
+1. Click **"Open Log Viewer"** in the settings window
+2. Drag and drop your CSV file onto the viewer
+3. View interactive charts grouped by hardware device
 
 **Features:**
-- 📊 Beautiful interactive charts for all sensor types
+- 📊 Interactive charts for Temperature, Fan, Load, Clock, Power
 - 🔍 Filter by sensor type or specific sensor
-- 🖥️ Sensors grouped by hardware device (like LibreHardwareMonitor)
-- 📈 Separate charts for Temperature, Fan, Load, Clock, and Power
-- 📋 Statistics summary (max, min, average temperatures)
-- 📱 Works completely offline (no internet required)
-- 🚀 No installation needed - just open in any browser
+- 🖥️ Sensors grouped by hardware device
+- 📋 Statistics summary (max, min, average)
+- 📱 Works offline - no internet required
 
-**Usage:**
-1. Double-click `log_viewer.html` to open it in your browser
-2. Click "Choose CSV Log File" and select your log file
-3. Use dropdown filters to view specific sensors or sensor types
-4. View interactive charts and statistics grouped by hardware device
+### Alternative Analysis Tools
 
-### Option 2: Traditional Tools
-
-You can also open the CSV files in:
 - **Microsoft Excel** - For custom charts and analysis
 - **Google Sheets** - For online analysis and sharing
 - **Python/Pandas** - For programmatic analysis
-- **Any text editor** - For quick viewing
 
-Want EasyLogger to start automatically when Windows starts? See **[STARTUP_GUIDE.md](STARTUP_GUIDE.md)** for detailed instructions.
+## Building from Source
 
-**Quick Setup:**
-1. Edit `start_logging.bat` - update the path to LibreHardwareMonitor
-2. Right-click `setup_autostart.bat` → "Run as administrator"
-3. Press Y to confirm
-4. Done! Both LibreHardwareMonitor and the logger will start automatically on login
+### Requirements
+
+- .NET 8.0 SDK or later
+- Windows OS
+- Inno Setup 6 (for building installer)
+
+### Build Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/easylogger.git
+cd easylogger
+
+# Restore NuGet packages
+dotnet restore
+
+# Build release version
+dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+
+# Or use the build script
+build.bat
+
+# Build installer (requires Inno Setup)
+"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+```
+
+Output:
+- Executable: `bin\Release\net8.0-windows\win-x64\publish\EasyLogger.exe`
+- Installer: `installer-output\EasyLogger_Setup_v2.0.exe`
+
+## Configuration
+
+Settings are stored in `appsettings.json`:
+
+```json
+{
+  "Settings": {
+    "LoggingInterval": 10,
+    "OutputDirectory": "logs",
+    "StartMinimizedToTray": true,
+    "ShowBalloonNotifications": true
+  }
+}
+```
+
+Changes made through the settings window are saved automatically.
+
+## Command-Line Options
+
+```
+EasyLogger.exe [options]
+
+Options:
+  -i, --interval <seconds>    Logging interval (default: from appsettings.json)
+  -o, --output <directory>    Output directory (default: from appsettings.json)
+  -h, --help                  Show help message
+```
+
+## Troubleshooting
+
+### "Administrator privileges required" error
+
+EasyLogger needs admin rights to access hardware sensors. Right-click the executable and select "Run as administrator".
+
+### No temperature data / sensors not found
+
+- Ensure your hardware is supported by LibreHardwareMonitor
+- Check Windows Device Manager for sensor drivers
+- Some virtual machines don't expose hardware sensors
+
+### Auto-start not working
+
+The installer creates a Windows scheduled task. Check Task Scheduler for "EasyLogger" task. You can also toggle auto-start in the settings window.
+
+## Technical Details
+
+- **Language:** C# .NET 8.0
+- **UI Framework:** Windows Forms
+- **Hardware Library:** LibreHardwareMonitorLib 0.9.3
+- **Deployment:** Single-file self-contained executable (~70MB)
+- **Installer:** Inno Setup 6
+- **Icon:** Custom yellow thermometer design
+
+## Version History
+
+### v2.0 (Current)
+- Complete rewrite in C#
+- Windows Forms UI with settings window
+- System tray integration
+- Custom icon
+- Professional installer
+- Direct hardware access (no external dependencies)
+- Auto-start with Windows
+
+### v1.0
+- Python-based implementation
+- Console application
+- Required LibreHardwareMonitor running separately
 
 ## License
 
-This project is open-source. LibreHardwareMonitor is licensed under MPL 2.0.
+This project is open-source. LibreHardwareMonitorLib is licensed under MPL 2.0.
 
 ## Contributing
 
 Feel free to submit issues or pull requests for improvements.
+
+## Support
+
+For issues, questions, or feature requests, please open an issue on GitHub.
